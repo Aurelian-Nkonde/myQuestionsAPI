@@ -4,7 +4,6 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreatePlayDto } from './dto/create-play.dto';
-import { UpdatePlayDto } from './dto/update-play.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PlayEntity } from './entities/play.entity';
 import ShortUniqueId from 'short-unique-id';
