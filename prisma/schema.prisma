@@ -1,0 +1,134 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+model User {
+  uniqueId String
+  username String
+  email String @unique
+  password String
+  active Boolean
+  gender Gender 
+  phoneNumber String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
+
+enum Target {
+  Private
+  Public
+}
+
+/*
+  questions: [
+    {
+      QuestionText: string,
+      answer: string,
+      possibleAnswers: [{text: "string", id: string}]
+    },
+    {}
+  ]
+*/
+
+model Deck {
+  uniqueId String
+  userId String
+  coverImage String
+  numberOfQuestions Int
+  target Target
+  questions Json
+  status Boolean
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
+
+model Play {
+  uniqueId String @unique
+  playerId String
+  deckId String
+  score Int
+  numberOfQuestions Int
+  completed Boolean @default(false)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
+
+enum InviteStatus {
+  Pending
+  Opened
+}
+
+model Invite {
+  uniqueId String @unique
+  deckId String
+  status InviteStatus @default(Pending)
+  inviteeId String
+  inviteeEmail String
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
+
+enum NotificationStatus {
+  READ
+  UNREAD
+}
+
+enum NotificationType {
+  DECKPLAYED
+  DECKPLAYREQUEST
+  DECKPLAYINVITE
+}
+
+model Notification {
+  uniqueId String @unique
+  status NotificationStatus @default(UNREAD)
+  userId String
+  NotificationMessage String
+  notificationType NotificationType 
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
+
+enum deckRequestStatus {
+  PENDING 
+  ACCEPTED
+  REJECTED
+}
+
+model DeckRequest {
+  uniqueId String
+  deckId String
+  userId String
+  status deckRequestStatus @default(PENDING)
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
+
+  @@id([uniqueId])
+}
