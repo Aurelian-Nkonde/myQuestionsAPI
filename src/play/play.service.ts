@@ -7,10 +7,15 @@ import { CreatePlayDto } from './dto/create-play.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PlayEntity } from './entities/play.entity';
 import ShortUniqueId from 'short-unique-id';
+import { NotificationsService } from 'src/notifications/notifications.service';
+import { NotificationType } from 'generated/prisma';
 
 @Injectable()
 export class PlayService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationsService,
+  ) {}
 
   async createAPlay(play: CreatePlayDto): Promise<PlayEntity> {
     const uuid = new ShortUniqueId({ length: 12 });
@@ -24,6 +29,16 @@ export class PlayService {
     });
     if (!newPlay) {
       throw new InternalServerErrorException('Error creating a play');
+    }
+    const deck = await this.prisma.deck.findFirst({
+      where: { uniqueId: newPlay.deckId },
+    });
+    // create a notification
+    if (deck?.userId) {
+      await this.notificationService.createANotification({
+        userId: deck?.userId,
+        notificationType: NotificationType.DECKPLAYED,
+      });
     }
     return newPlay;
   }

@@ -37,11 +37,11 @@ export class NotificationsService {
   getNotificationMessage(notificationType: NotificationType): string {
     switch (notificationType) {
       case NotificationType.DECKPLAYED:
-        return '';
+        return 'Someone played your deck!';
       case NotificationType.DECKPLAYINVITE:
-        return '';
+        return `{You're invited to play a deck.}`;
       case NotificationType.DECKPLAYREQUEST:
-        return '';
+        return 'Someone is interested in playing your deck.';
       default:
         return '';
     }
