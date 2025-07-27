@@ -77,14 +77,16 @@ model Play {
 }
 
 enum InviteStatus {
-  Pending
-  Opened
+  PENDING
+  ACCEPTED
+  REJECTED
+  CANCELLED
 }
 
 model Invite {
   uniqueId String @unique
   deckId String
-  status InviteStatus @default(Pending)
+  status InviteStatus @default(PENDING)
   inviteeId String
   inviteeEmail String
   createdAt  DateTime   @default(now())
@@ -120,6 +122,7 @@ enum deckRequestStatus {
   PENDING 
   ACCEPTED
   REJECTED
+  CANCELLED
 }
 
 model DeckRequest {
